@@ -1,2 +1,0 @@
-class Leech:
-    pass

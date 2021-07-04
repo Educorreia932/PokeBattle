@@ -1,22 +1,25 @@
 from sly import Parser
+
+from .statements.jump import Jump
 from .lexer import PokeBattleLexer
-from .commands.program import Program
-from .commands.trainers import Trainers
-from .commands.pokemon_list import PokemonList
-from .commands.battle import Battle
-from .commands.go_pokemon import GoPokemon
-from .commands.turn import Turn
-from .commands.damage import Damage
-from .commands.effectiveness import Effectiveness
-from .commands.math_damage import MathDamage
-from .commands.ohko import OHKO
-from .commands.heal import Heal
-from .commands.leech import Leech
-from .commands.sync import Sync
-from .commands.switch import Switch
-from .commands.status import Status
-from .commands.output import Output
-from .commands.input import Input
+from .statements.program import Program
+from .statements.trainers import Trainers
+from .statements.pokemon_list import PokemonList
+from .statements.battle import Battle
+from .statements.go_pokemon import GoPokemon
+from .statements.turn import Turn
+from .statements.damage import Damage
+from .statements.effectiveness import Effectiveness
+from .statements.math_damage import MathDamage
+from .statements.ohko import OHKO
+from .statements.heal import Heal
+from .statements.leech import Leech
+from .statements.sync import Sync
+from .statements.switch import Switch
+from .statements.status import Status
+from .statements.output import Output
+from .statements.input import Input
+
 
 class PokeBattleParser(Parser):
     tokens = PokeBattleLexer.tokens
@@ -39,7 +42,7 @@ class PokeBattleParser(Parser):
 
     @_('IDENTIFIER ":" IDENTIFIER GO')
     def go_pokemon(self, p):
-        return GoPokemon(p[0] , p[2])
+        return GoPokemon(p[0], p[2])
 
     @_('turns turn')
     def turns(self, p):
@@ -55,7 +58,8 @@ class PokeBattleParser(Parser):
     def turn(self, p):
         return Turn(p[1], p[3], p[4])
 
-    @_('nothing', 'damage', 'math_damage', 'ohko', 'heal', 'leech', 'sync', 'switch', 'status', 'jump', 'output', 'input')
+    @_('nothing', 'damage', 'math_damage', 'ohko', 'heal', 'leech', 'sync', 'switch', 'status', 'jump', 'output',
+       'input')
     def command(self, p):
         return p
 
@@ -71,31 +75,31 @@ class PokeBattleParser(Parser):
 
     @_('IDENTIFIER USES DAMAGE_MOVE EXCLAMATION')
     def damage(self, p):
-        return Damage(p[2])
+        return Damage(p[0], p[2])
 
     @_('NOT_VERY_EFFECTIVE', 'SUPER_EFFECTIVE')
     def effectiveness(self, p):
         return Effectiveness(p[0])
 
     @_('IDENTIFIER USES MATH_DAMAGE_MOVE EXCLAMATION')
-    def math_damage(self, p):
+    def math_damage(self, _):
         return MathDamage()
 
     @_('IDENTIFIER USES KO_MOVE EXCLAMATION')
     def ohko(self, p):
-        return OHKO()
+        return OHKO(p[0])
 
     @_('IDENTIFIER USES ITEM EXCLAMATION')
     def heal(self, p):
-        return Heal()
+        return Heal(p[0], p[2])
 
     @_('IDENTIFIER USES LEECH_MOVE EXCLAMATION')
     def leech(self, p):
-        return Leech()
+        return Leech(p[0])
 
     @_('IDENTIFIER USES SYNC_MOVE EXCLAMATION')
     def sync(self, p):
-        return Sync()
+        return Sync(p[0])
 
     @_('IDENTIFIER ":" THATS_ENOUGH IDENTIFIER EXCLAMATION')
     def switch(self, p):
@@ -103,7 +107,7 @@ class PokeBattleParser(Parser):
 
     @_('IDENTIFIER USES STATUS_MOVE EXCLAMATION')
     def status(self, p):
-        return Status()
+        return Status(p[0], p[2])
 
     @_('IDENTIFIER THINKS_ABOUT_TURN INTEGER')
     def jump(self, p):
@@ -111,8 +115,8 @@ class PokeBattleParser(Parser):
 
     @_('IDENTIFIER USES OUTPUT_MOVE EXCLAMATION')
     def output(self, p):
-        return Output(p[2])
+        return Output(p[0], p[2])
 
     @_('IDENTIFIER USES INPUT_MOVE EXCLAMATION')
     def input(self, p):
-        return Input(p[2])
+        return Input(p[0], p[2])

@@ -28,7 +28,9 @@ class PokeBattleLexer(Lexer):
     NOT_VERY_EFFECTIVE = "It's not very effective."
     SUPER_EFFECTIVE = "It's super effective!"
 
-    DAMAGE_MOVE = r"Tackle|Ember|Vine Whip|Water Gun|Thunder Shock|Rock Throw|Confusion|Mach Punch|Wing Attack|Powder Snow|Body Slam|Flamethrower|Razor Leaf|Hydro Pump|Thunderbolt|Earthquake|Psychic|High Jump Kick|Fly|Ice Beam"
+    DAMAGE_MOVE = r"Tackle|Ember|Vine Whip|Water Gun|Thunder Shock|Rock Throw|Confusion|Mach Punch|Wing Attack|Powder " \
+                  r"Snow|Body Slam|Flamethrower|Razor Leaf|Hydro Pump|Thunderbolt|Earthquake|Psychic|High Jump " \
+                  r"Kick|Fly|Ice Beam "
     MATH_DAMAGE_MOVE = r"Hyper Beam|Dragon Rage"
     KO_MOVE = r"Fissure|Guillotine|Sheer Cold"
     ITEM = r"Potion|Super Potion|Hyper Potion|Max Potion"

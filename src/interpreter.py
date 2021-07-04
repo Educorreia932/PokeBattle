@@ -1,31 +1,45 @@
+from typing import Dict
+
 from plum import dispatch
-from .commands.enums import Mode
-from .commands.program import Program
-from .commands.pokemon_list import PokemonList
-from .commands.go_pokemon import GoPokemon
-from .commands.turn import Turn
-from .commands.damage import Damage
-from .commands.math_damage import MathDamage
-from .commands.ohko import OHKO
-from .commands.heal import Heal
-from .commands.leech import Leech
-from .commands.sync import Sync
-from .commands.switch import Switch
-from .commands.status import Status
-from .commands.output import Output
-from .commands.input import Input
+
+from .models.pokemon import Pokemon
+from .models.trainer import Trainer
+from .statements.damage import Damage
+from .statements.go_pokemon import GoPokemon
+from .statements.heal import Heal
+from .statements.input import Input
+from .statements.leech import Leech
+from .statements.math_damage import MathDamage
+from .statements.ohko import OHKO
+from .statements.output import Output
+from .statements.program import Program
+from .statements.status import Status
+from .statements.switch import Switch
+from .statements.sync import Sync
+from .statements.turn import Turn
+
 
 class PokeBattleInterpreter:
-    trainers_pokemon = {}
-    active_pokemon = {}
+    pokemon: Dict[str, Pokemon]
+    trainers: Dict[str, Trainer]
 
     @dispatch
     def interpret(self, program: Program):
-        self.player = program.trainers.pokemon_lists[0].trainer
-        self.adversary = program.trainers.pokemon_lists[1].trainer
+        pokemon_lists = program.trainers.pokemon_lists
 
-        for pokemon_list in program.trainers.pokemon_lists:
-            self.interpret(pokemon_list)
+        player = Trainer(pokemon_lists[0].trainer, pokemon_lists[0].pokemon)
+        adversary = Trainer(pokemon_lists[1].trainer, pokemon_lists[1].pokemon)
+
+        player.opponent = adversary
+        adversary.opponent = player
+
+        self.trainers = {
+            player.name: player,
+            adversary.name: adversary
+        }
+
+        self.pokemon = {p.name: p for p in player.pokemon.values()}
+        self.pokemon.update({p.name: p for p in adversary.pokemon.values()})
 
         for go_pokemon in program.battle.starter_pokemon:
             self.interpret(go_pokemon)
@@ -34,17 +48,8 @@ class PokeBattleInterpreter:
             self.interpret(turn)
 
     @dispatch
-    def interpret(self, pokemon_list: PokemonList):
-        trainer_pokemon = {}
-
-        for pokemon in pokemon_list.pokemon:
-            trainer_pokemon[pokemon] = 5
-
-        self.trainers_pokemon[pokemon_list.trainer] = trainer_pokemon
-
-    @dispatch
     def interpret(self, go_pokemon: GoPokemon):
-        self.active_pokemon[go_pokemon.trainer] = go_pokemon.pokemon
+        self.trainers[go_pokemon.trainer].active_pokemon = go_pokemon.pokemon
 
     @dispatch
     def interpret(self, turn: Turn):
@@ -53,38 +58,31 @@ class PokeBattleInterpreter:
 
     @dispatch
     def interpret(self, damage: Damage):
-        health = self.get_pokemon_health(self.player, self.active_pokemon[self.player]) - damage.level
-        self.set_pokemon_health(self.player, self.active_pokemon[self.player], health)
+        self.pokemon[damage.pokemon].deal_damage(damage.level)
 
     @dispatch
     def interpret(self, math_damage: MathDamage):
-        player_health = self.get_pokemon_health(self.player, self.active_pokemon[self.player])
-        adversary_health = self.get_pokemon_health(self.adversary, self.active_pokemon[self.adversary])
-        health = adversary_health - player_health
-        self.set_pokemon_health(self.adversary, self.active_pokemon[adversary], health)
+        self.pokemon[math_damage.pokemon].deal_math_damage()
 
     @dispatch
     def interpret(self, ohko: OHKO):
-        self.set_pokemon_health(self.adversary, self.active_pokemon[adversary], 0)
+        self.pokemon[ohko.pokemon].knockout()
 
     @dispatch
     def interpret(self, heal: Heal):
-        self.trainers_pokemon[self.active_pokemon[self.player]] += heal.level
+        self.trainers[heal.trainer].active_pokemon.heal(heal.level)
 
     @dispatch
     def interpret(self, leech: Leech):
-        adversary_health = self.get_pokemon_health(self.adversary, self.active_pokemon[self.adversary])
-        health = self.get_pokemon_health(self.player, self.active_pokemon[self.player]) + adversary_health
-        self.set_pokemon_health(self.player, self.active_pokemon[self.player], health)
+        self.pokemon[leech.pokemon].leech()
 
     @dispatch
     def interpret(self, sync: Sync):
-        adversary_health = self.get_pokemon_health(self.adversary, self.active_pokemon[self.adversary])
-        self.set_pokemon_health(self.player, self.active_pokemon[self.player], adversary_health)
+        self.pokemon[sync.pokemon].sync()
 
     @dispatch
     def interpret(self, switch: Switch):
-        self.active_pokemon[switch.trainer] = switch.new_pokemon
+        self.trainers[switch.trainer].active_pokemon = switch.new_pokemon
 
     @dispatch
     def interpret(self, status: Status):
@@ -92,19 +90,8 @@ class PokeBattleInterpreter:
 
     @dispatch
     def interpret(self, output: Output):
-        if output.mode == Mode.ASCII:
-            print(self.get_pokemon_health(self.player, self.active_pokemon[self.player]))
-
-        elif output.mode == Mode.INTEGER:
-            print(self.get_pokemon_health(self.player, self.active_pokemon[self.player]))
+        print(self.pokemon[output.pokemon].print(output.mode))
 
     @dispatch
     def interpret(self, input: Input):
         pass
-
-    def set_pokemon_health(self, trainer, pokemon, health):
-        self.trainers_pokemon[trainer][self.active_pokemon[trainer]] = health
-
-    def get_pokemon_health(self, trainer, pokemon):
-        return self.trainers_pokemon[trainer][self.active_pokemon[trainer]] 
-    

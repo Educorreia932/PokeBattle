@@ -1,7 +1,10 @@
-from .enums import Mode
+from src.models.mode import Mode
+
 
 class Output:
-    def __init__(self, move):
+    def __init__(self, pokemon, move):
+        self.pokemon = pokemon
+
         if move == "Swords Dance":
             self.mode = Mode.ASCII
 
