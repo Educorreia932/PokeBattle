@@ -71,7 +71,7 @@ class PokeBattleParser(Parser):
 
     @_('IDENTIFIER USES DAMAGE_MOVE EXCLAMATION effectiveness')
     def damage(self, p):
-        return Damage(p[2], p[4])
+        return Damage(p[0], p[2], p[4])
 
     @_('IDENTIFIER USES DAMAGE_MOVE EXCLAMATION')
     def damage(self, p):

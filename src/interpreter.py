@@ -90,7 +90,7 @@ class PokeBattleInterpreter:
 
     @dispatch
     def interpret(self, output: Output):
-        print(self.pokemon[output.pokemon].print(output.mode))
+        print(self.pokemon[output.pokemon].print(output.mode), end="")
 
     @dispatch
     def interpret(self, input: Input):

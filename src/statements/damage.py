@@ -12,3 +12,4 @@ class Damage:
 
         if effectiveness is not None:
             self.level *= effectiveness.multiplier
+            self.level = int(self.level)

@@ -5,4 +5,3 @@ class Effectiveness:
 
         elif effectiveness == "It's not very effective.":
             self.multiplier = 0.5
-            
