@@ -25,13 +25,13 @@ class PokeBattleParser(Parser):
     def program(self, p):
         return Program(p[0], p[1])
 
-    @_('TRAINER_1 IDENTIFIER pokemon_list TRAINER_2 IDENTIFIER pokemon_list')
+    @_('TRAINER_1 pokemon_list TRAINER_2 pokemon_list')
     def trainers(self, p):
-        return Trainers(p[1], p[2], p[3], p[4])
+        return Trainers(p[1], p[3])
 
-    @_('IDENTIFIER IDENTIFIER IDENTIFIER IDENTIFIER IDENTIFIER IDENTIFIER')
+    @_('IDENTIFIER IDENTIFIER IDENTIFIER IDENTIFIER IDENTIFIER IDENTIFIER IDENTIFIER')
     def pokemon_list(self, p):
-        return PokemonList(p[0], p[1], p[2], p[3], p[4], p[5])
+        return PokemonList(p[0], p[1], p[2], p[3], p[4], p[5], p[6])
 
     @_('BATTLE_START TURN ZERO ":" go_pokemon go_pokemon turns BATTLE_END WINNER IDENTIFIER')
     def battle(self, p):
