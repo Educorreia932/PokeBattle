@@ -31,10 +31,17 @@ class Pokemon:
 
     def print(self, mode):
         if mode == Mode.ASCII:
-            return chr(self.hp)
+            print(chr(self.hp), end="")
 
         elif mode == Mode.INTEGER:
-            return self.hp
+            print(self.hp, end="")
+
+    def input(self, mode):
+        if mode == Mode.ASCII:
+            self.hp = chr(int(input()))
+
+        elif mode == Mode.INTEGER:
+            self.hp = int(input())
 
     def __repr__(self):
         return f"<{self.name}: {self.hp}>"
