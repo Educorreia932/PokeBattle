@@ -18,15 +18,17 @@ class PokeBattleParser(Parser):
     def pokemon_list(self, p):
         pass
 
-    @_('BATTLE_START TURN "0" ":" IDENTIFIER GO IDENTIFIER ":" IDENTIFIER GO turns')
+    @_('BATTLE_START TURN ZERO ":" go_pokemon go_pokemon turns BATTLE_END WINNER IDENTIFIER')
     def battle(self, p):
         pass
 
-    @_('turn')
-    def turns(self, p):
-        t[0].append(t[1])
+    @_('IDENTIFIER ":" IDENTIFIER GO')
+    def go_pokemon(self, p):
+        pass
 
-        return t[0]
+    @_('turns turn', '')
+    def turns(self, p):
+        pass
 
     @_('TURN INTEGER ":" command command')
     def turn(self, p):
@@ -36,9 +38,17 @@ class PokeBattleParser(Parser):
     def command(self, p):
         pass
 
+    @_('command effectiveness') # TODO: Only allow moves to have effectiveness
+    def command(self, p):
+        pass
+
+    @_('NOT_VERY_EFFECTIVE', 'SUPER_EFFECTIVE', '')
+    def effectiveness(self, p):
+        pass
+
     @_('IDENTIFIER RUN_AWAY',
        'IDENTIFIER FLINCHES',
-       'IDENTIFIER SPLASH')
+       'IDENTIFIER USES SPLASH EXCLAMATION')
     def nothing(self, p):
         pass
 
@@ -66,7 +76,7 @@ class PokeBattleParser(Parser):
     def sync(self, p):
         pass
 
-    @_('THATS_ENOUGH GO_ IDENTIFIER EXCLAMATION')
+    @_('IDENTIFIER ":" THATS_ENOUGH IDENTIFIER EXCLAMATION')
     def switch(self, p):
         pass
 
