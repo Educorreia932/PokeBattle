@@ -6,10 +6,10 @@ from .commands.pokemon_list import PokemonList
 from .commands.battle import Battle
 from .commands.go_pokemon import GoPokemon
 from .commands.turn import Turn
-from .commands.nothing import Nothing
 from .commands.damage import Damage
 from .commands.effectiveness import Effectiveness
 from .commands.math_damage import MathDamage
+from .commands.ohko import OHKO
 from .commands.heal import Heal
 from .commands.leech import Leech
 from .commands.sync import Sync
@@ -35,11 +35,11 @@ class PokeBattleParser(Parser):
 
     @_('BATTLE_START TURN ZERO ":" go_pokemon go_pokemon turns BATTLE_END WINNER IDENTIFIER')
     def battle(self, p):
-        return Battle(p[5])
+        return Battle(p[6], p[4], p[5])
 
     @_('IDENTIFIER ":" IDENTIFIER GO')
     def go_pokemon(self, p):
-        return GoPokemon()
+        return GoPokemon(p[0] , p[2])
 
     @_('turns turn')
     def turns(self, p):
@@ -57,25 +57,25 @@ class PokeBattleParser(Parser):
 
     @_('nothing', 'damage', 'math_damage', 'ohko', 'heal', 'leech', 'sync', 'switch', 'status', 'jump', 'output', 'input')
     def command(self, p):
-        pass
+        return p
 
     @_('IDENTIFIER RUN_AWAY',
        'IDENTIFIER FLINCHES',
        'IDENTIFIER USES SPLASH EXCLAMATION')
     def nothing(self, p):
-        return Nothing()
-
-    @_('damage_ effectiveness', 'damage_')
-    def damage(self, p):
         pass
 
+    @_('IDENTIFIER USES DAMAGE_MOVE EXCLAMATION effectiveness')
+    def damage(self, p):
+        return Damage(p[2], p[4])
+
     @_('IDENTIFIER USES DAMAGE_MOVE EXCLAMATION')
-    def damage_(self, p):
+    def damage(self, p):
         return Damage(p[2])
 
     @_('NOT_VERY_EFFECTIVE', 'SUPER_EFFECTIVE')
     def effectiveness(self, p):
-        return Effectiveness()
+        return Effectiveness(p[0])
 
     @_('IDENTIFIER USES MATH_DAMAGE_MOVE EXCLAMATION')
     def math_damage(self, p):
@@ -99,7 +99,7 @@ class PokeBattleParser(Parser):
 
     @_('IDENTIFIER ":" THATS_ENOUGH IDENTIFIER EXCLAMATION')
     def switch(self, p):
-        return Switch(p[3])
+        return Switch(p[0], p[3])
 
     @_('IDENTIFIER USES STATUS_MOVE EXCLAMATION')
     def status(self, p):

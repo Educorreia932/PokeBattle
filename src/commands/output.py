@@ -1,9 +1,9 @@
-from .enums import IOType
+from .enums import Mode
 
 class Output:
     def __init__(self, move):
         if move == "Swords Dance":
-            self.io_type = IOType.ASCII
+            self.mode = Mode.ASCII
 
         elif move == "Barrier":
-            self.io_type = IOType.INTEGER
+            self.mode = Mode.INTEGER

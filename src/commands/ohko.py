@@ -1,0 +1,2 @@
+class OHKO:
+    pass
