@@ -1,0 +1,2 @@
+class MathDamage:
+    pass

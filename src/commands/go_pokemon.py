@@ -1,0 +1,2 @@
+class GoPokemon:
+    pass

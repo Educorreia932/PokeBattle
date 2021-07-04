@@ -4,11 +4,11 @@
 
 The original inspiration and specification was taken from [Esolangs wiki](https://esolangs.org/wiki/Pok%C3%A9Battle).
 
-### EBNF Grammar
+## EBNF Grammar
 
 ```py
 Identifier = (["A"-"Z", "a"-"z"](["0"-"9", "A"-"Z", "a"-"z"])*);
-Integer = [0-9]+;
+Integer = ["0"-"9"]+;
 
 Program = Trainers, Battle;
 

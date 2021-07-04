@@ -6,15 +6,12 @@ def main():
     lexer = PokeBattleLexer()
     parser = PokeBattleParser()
 
-    with open("programs/Test.poke", "r") as f:
+    with open("programs/HelloWorld.poke", "r") as f:
         source = f.read()
 
     tokens = lexer.tokenize(source)
+    program = parser.parse(tokens)
 
-    for token in tokens:
-        print(token)
-
-    program = parser.parse(lexer.tokenize(source))
 
 if __name__ == "__main__":
     main()
