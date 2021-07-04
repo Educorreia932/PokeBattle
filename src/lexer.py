@@ -1,8 +1,12 @@
 from sly import Lexer
 
+
 class PokeBattleLexer(Lexer):
-    tokens = {IDENTIFIER, INTEGER, DAMAGE_MOVE, MATH_DAMAGE_MOVE, KO_MOVE,
-              ITEM, LEECH_MOVE, SYNC_MOVE, STATUS_MOVE, OUTPUT_MOVE, INPUT_MOVE}
+    tokens = {IDENTIFIER, INTEGER, DAMAGE_MOVE, MATH_DAMAGE_MOVE, KO_MOVE, ITEM, LEECH_MOVE, SYNC_MOVE, STATUS_MOVE, OUTPUT_MOVE, INPUT_MOVE, TRAINER_1, TRAINER_2, BATTLE_START, TURN, GO, GO_, USES, EXCLAMATION, THINKS_ABOUT_TURN, THATS_ENOUGH, RUN_AWAY, FLINCHES, SPLASH}
+
+    literals = {":", "!", "'", "."}
+
+    ignore = " \t"
 
     IDENTIFIER = r"[a-zA-Z][a-zA-Z0-9]*"
     INTEGER = r"\d+"
@@ -15,3 +19,21 @@ class PokeBattleLexer(Lexer):
     STATUS_MOVE = r"Blizzard | Thunder Wave | Sing"
     OUTPUT_MOVE = r"Swords Dance | Barrier"
     INPUT_MOVE = r"Growl | Lear"
+    TRAINER_1 = "Trainer 1:"
+    TRAINER_2 = "Trainer 2:"
+    BATTLE_START = "Battle Start!"
+    TURN = "Turn"
+    GO = "Go!"
+    GO_ = "Go"
+    USES = "uses"
+    EXCLAMATION = "!"
+    THINKS_ABOUT_TURN = "thinks about turn"
+    THATS_ENOUGH = "That\'s enough!"
+    RUN_AWAY = "tried to run away! You can\'t run from a trainer battle!"
+    FLINCHES = "flinches!"
+    SPLASH = "uses Splash!"
+
+    # Line number tracking
+    @_(r'\n+')
+    def ignore_newline(self, t):
+        self.lineno += t.value.count('\n')
