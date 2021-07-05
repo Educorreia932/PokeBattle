@@ -2,8 +2,10 @@ from sly import Lexer
 
 
 class PokeBattleLexer(Lexer):
-    tokens = {IDENTIFIER, INTEGER, DAMAGE_MOVE, MATH_DAMAGE_MOVE, KO_MOVE, ITEM, LEECH_MOVE, SYNC_MOVE, STATUS_MOVE, OUTPUT_MOVE,
-              INPUT_MOVE, TRAINER_1, TRAINER_2, BATTLE_START, TURN, ZERO, GO, USES, EXCLAMATION, THINKS_ABOUT_TURN, THATS_ENOUGH,
+    tokens = {IDENTIFIER, INTEGER, DAMAGE_MOVE, MATH_DAMAGE_MOVE, KO_MOVE, ITEM, LEECH_MOVE, SYNC_MOVE, STATUS_MOVE,
+              OUTPUT_MOVE,
+              INPUT_MOVE, TRAINER_1, TRAINER_2, BATTLE_START, TURN, ZERO, GO, USES, EXCLAMATION, THINKS_ABOUT_TURN,
+              THATS_ENOUGH,
               RUN_AWAY, FLINCHES, SPLASH, BATTLE_END, WINNER, NOT_VERY_EFFECTIVE, SUPER_EFFECTIVE}
 
     literals = {":", "!", "'", "."}
@@ -47,14 +49,3 @@ class PokeBattleLexer(Lexer):
     @_(r'\n+')
     def ignore_newline(self, t):
         self.lineno += t.value.count('\n')
-
-    # Column number tracking
-    def find_column(text, token):
-        last_cr = text.rfind('\n', 0, token.index)
-
-        if last_cr < 0:
-            last_cr = 0
-
-        column = (token.index - last_cr) + 1
-
-        return column

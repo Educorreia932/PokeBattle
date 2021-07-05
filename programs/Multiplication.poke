@@ -1,0 +1,70 @@
+Trainer 1: Alice
+    A
+    B
+    C
+    D
+    E
+    F
+Trainer 2: Bob
+    G
+    H
+    I
+    J
+    K
+    L
+
+Battle Start!
+Turn 0:
+    Alice: C Go!
+    Bob: G Go!
+
+Turn 1:
+    C uses Lear!
+    G uses Lear!
+
+Turn 2:
+    C uses Splash!
+    Bob: That's enough! Go H!
+
+Turn 3:
+    C uses Fissure!
+    H uses Splash!
+
+Turn 4:
+    C uses Splash!
+    H uses Absorb!
+
+Turn 5:
+    C uses Splash!
+    Bob: That's enough! Go G!
+
+Turn 6:
+    C uses Tackle! It's not very effective.
+    G uses Splash!
+
+Turn 7:
+    Alice: That's enough! Go B!
+    G uses Fissure!
+
+Turn 8:
+    B uses Thunder Wave!
+    Bob thinks about turn 11.
+
+Turn 9:
+    B uses Splash!
+    Bob: That's enough! Go H!
+
+Turn 10:
+    Alice: That's enough! Go C!
+    Bob thinks about turn 4.
+
+Turn 11:
+    B uses Splash!
+    Bob: That's enough! Go H!
+
+Turn 12:
+    B uses Splash!
+    H uses Barrier!
+
+Battle End!
+Winner: Alice

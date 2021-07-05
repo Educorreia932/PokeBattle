@@ -8,7 +8,7 @@ def main():
     parser = PokeBattleParser()
     interpreter = PokeBattleInterpreter()
 
-    with open("programs/HelloWorld.poke", "r") as f:
+    with open("programs", "r") as f:
         source = f.read()
 
     tokens = lexer.tokenize(source)

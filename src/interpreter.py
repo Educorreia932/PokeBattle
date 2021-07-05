@@ -102,17 +102,17 @@ class PokeBattleInterpreter:
     @dispatch
     def interpret(self, status: Status):
         player_pokemon_hp = self.player.active_pokemon.hp
-        adversary_pokemon_hp = self.player.active_pokemon.hp
+        adversary_pokemon_hp = self.adversary.active_pokemon.hp
 
-        if status.move == "Freeze":
+        if status.move == "Blizzard":
             if player_pokemon_hp == adversary_pokemon_hp:
                 self.skip = True
 
-        elif status.move == "Paralyze":
+        elif status.move == "Thunder Wave":
             if player_pokemon_hp != adversary_pokemon_hp:
                 self.skip = True
 
-        elif status.move == "Sleep":
+        elif status.move == "Sing":
             pokemon_using_move = self.pokemon[status.move.pokemon].hp
 
             if pokemon_using_move.opposing_pokemon.hp < pokemon_using_move.hp:
