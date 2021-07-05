@@ -4,24 +4,26 @@ from plum import dispatch
 
 from .models.pokemon import Pokemon
 from .models.trainer import Trainer
-from .statements.damage import Damage
+from .statements.commands.damage import Damage
+from .statements.commands.heal import Heal
+from .statements.commands.input import Input
+from .statements.commands.jump import Jump
+from .statements.commands.leech import Leech
+from .statements.commands.math_damage import MathDamage
+from .statements.commands.ohko import OHKO
+from .statements.commands.output import Output
+from .statements.commands.status import Status
+from .statements.commands.switch import Switch
+from .statements.commands.sync import Sync
 from .statements.go_pokemon import GoPokemon
-from .statements.heal import Heal
-from .statements.input import Input
-from .statements.leech import Leech
-from .statements.math_damage import MathDamage
-from .statements.ohko import OHKO
-from .statements.output import Output
 from .statements.program import Program
-from .statements.status import Status
-from .statements.switch import Switch
-from .statements.sync import Sync
 from .statements.turn import Turn
 
 
 class PokeBattleInterpreter:
     pokemon: Dict[str, Pokemon]
     trainers: Dict[str, Trainer]
+    turn_counter = 1
 
     @dispatch
     def interpret(self, program: Program):
@@ -41,10 +43,16 @@ class PokeBattleInterpreter:
         self.pokemon = {p.name: p for p in player.pokemon.values()}
         self.pokemon.update({p.name: p for p in adversary.pokemon.values()})
 
+        # Set starter pokémon
         for go_pokemon in program.battle.starter_pokemon:
             self.interpret(go_pokemon)
 
-        for turn in program.battle.turns:
+        # Iterate over turns
+        while self.turn_counter <= len(program.battle.turns):
+            turn = program.battle.turns[self.turn_counter - 1]
+
+            self.turn_counter += 1
+
             self.interpret(turn)
 
     @dispatch
@@ -87,6 +95,10 @@ class PokeBattleInterpreter:
     @dispatch
     def interpret(self, status: Status):
         pass
+
+    @dispatch
+    def interpret(self, jump: Jump):
+        self.turn_counter = jump.turn_no
 
     @dispatch
     def interpret(self, output: Output):

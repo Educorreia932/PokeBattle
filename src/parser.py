@@ -1,24 +1,24 @@
 from sly import Parser
 
-from .statements.jump import Jump
 from .lexer import PokeBattleLexer
+from .statements.battle import Battle
+from .statements.commands.damage import Damage
+from .statements.commands.heal import Heal
+from .statements.commands.input import Input
+from .statements.commands.jump import Jump
+from .statements.commands.leech import Leech
+from .statements.commands.math_damage import MathDamage
+from .statements.commands.ohko import OHKO
+from .statements.commands.output import Output
+from .statements.commands.status import Status
+from .statements.commands.switch import Switch
+from .statements.commands.sync import Sync
+from .statements.effectiveness import Effectiveness
+from .statements.go_pokemon import GoPokemon
+from .statements.pokemon_list import PokemonList
 from .statements.program import Program
 from .statements.trainers import Trainers
-from .statements.pokemon_list import PokemonList
-from .statements.battle import Battle
-from .statements.go_pokemon import GoPokemon
 from .statements.turn import Turn
-from .statements.damage import Damage
-from .statements.effectiveness import Effectiveness
-from .statements.math_damage import MathDamage
-from .statements.ohko import OHKO
-from .statements.heal import Heal
-from .statements.leech import Leech
-from .statements.sync import Sync
-from .statements.switch import Switch
-from .statements.status import Status
-from .statements.output import Output
-from .statements.input import Input
 
 
 class PokeBattleParser(Parser):
@@ -109,7 +109,7 @@ class PokeBattleParser(Parser):
     def status(self, p):
         return Status(p[0], p[2])
 
-    @_('IDENTIFIER THINKS_ABOUT_TURN INTEGER')
+    @_('IDENTIFIER THINKS_ABOUT_TURN INTEGER "."')
     def jump(self, p):
         return Jump(p[2])
 
