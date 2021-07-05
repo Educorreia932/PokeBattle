@@ -21,27 +21,30 @@ from .statements.turn import Turn
 
 
 class PokeBattleInterpreter:
+    player: Trainer
+    adversary: Trainer
     pokemon: Dict[str, Pokemon]
     trainers: Dict[str, Trainer]
     turn_counter = 1
+    skip = False
 
     @dispatch
     def interpret(self, program: Program):
         pokemon_lists = program.trainers.pokemon_lists
 
-        player = Trainer(pokemon_lists[0].trainer, pokemon_lists[0].pokemon)
-        adversary = Trainer(pokemon_lists[1].trainer, pokemon_lists[1].pokemon)
+        self.player = Trainer(pokemon_lists[0].trainer, pokemon_lists[0].pokemon)
+        self.adversary = Trainer(pokemon_lists[1].trainer, pokemon_lists[1].pokemon)
 
-        player.opponent = adversary
-        adversary.opponent = player
+        self.player.opponent = self.adversary
+        self.adversary.opponent = self.player
 
         self.trainers = {
-            player.name: player,
-            adversary.name: adversary
+            self.player.name: self.player,
+            self.adversary.name: self.adversary
         }
 
-        self.pokemon = {p.name: p for p in player.pokemon.values()}
-        self.pokemon.update({p.name: p for p in adversary.pokemon.values()})
+        self.pokemon = {p.name: p for p in self.player.pokemon.values()}
+        self.pokemon.update({p.name: p for p in self.adversary.pokemon.values()})
 
         # Set starter pokémon
         for go_pokemon in program.battle.starter_pokemon:
@@ -62,7 +65,11 @@ class PokeBattleInterpreter:
     @dispatch
     def interpret(self, turn: Turn):
         for command in turn.commands:
-            self.interpret(command[1])
+            if not self.skip:
+                self.interpret(command[1])
+
+            else:
+                self.skip = False
 
     @dispatch
     def interpret(self, damage: Damage):
@@ -94,7 +101,22 @@ class PokeBattleInterpreter:
 
     @dispatch
     def interpret(self, status: Status):
-        pass
+        player_pokemon_hp = self.player.active_pokemon.hp
+        adversary_pokemon_hp = self.player.active_pokemon.hp
+
+        if status.move == "Freeze":
+            if player_pokemon_hp == adversary_pokemon_hp:
+                self.skip = True
+
+        elif status.move == "Paralyze":
+            if player_pokemon_hp != adversary_pokemon_hp:
+                self.skip = True
+
+        elif status.move == "Sleep":
+            pokemon_using_move = self.pokemon[status.move.pokemon].hp
+
+            if pokemon_using_move.opposing_pokemon.hp < pokemon_using_move.hp:
+                self.skip = True
 
     @dispatch
     def interpret(self, jump: Jump):

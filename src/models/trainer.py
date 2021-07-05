@@ -4,7 +4,7 @@ from src.models.pokemon import Pokemon
 class Trainer:
     _active_pokemon: Pokemon
 
-    def __init__(self, name, pokemon):
+    def __init__(self, name: str, pokemon: [Pokemon]):
         self.name = name
         self.pokemon = {p: Pokemon(p, self) for p in pokemon}
         

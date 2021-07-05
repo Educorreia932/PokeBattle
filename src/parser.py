@@ -82,8 +82,8 @@ class PokeBattleParser(Parser):
         return Effectiveness(p[0])
 
     @_('IDENTIFIER USES MATH_DAMAGE_MOVE EXCLAMATION')
-    def math_damage(self, _):
-        return MathDamage()
+    def math_damage(self, p):
+        return MathDamage(p[0])
 
     @_('IDENTIFIER USES KO_MOVE EXCLAMATION')
     def ohko(self, p):
