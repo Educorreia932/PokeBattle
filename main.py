@@ -1,6 +1,8 @@
+import sys
+
+from src.interpreter import PokeBattleInterpreter
 from src.lexer import PokeBattleLexer
 from src.parser import PokeBattleParser
-from src.interpreter import PokeBattleInterpreter
 
 
 def main():
@@ -8,7 +10,7 @@ def main():
     parser = PokeBattleParser()
     interpreter = PokeBattleInterpreter()
 
-    with open("programs", "r") as f:
+    with open(sys.argv[1], "r") as f:
         source = f.read()
 
     tokens = lexer.tokenize(source)
